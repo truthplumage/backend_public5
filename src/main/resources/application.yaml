@@ -1,6 +1,9 @@
 spring:
   config:
     import: optional:file:.env[.properties]
+  batch:
+    job:
+      enabled: false
   application:
     name: backend5
   datasource:
