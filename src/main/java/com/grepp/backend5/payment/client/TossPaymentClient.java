@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 @Component
@@ -37,7 +38,7 @@ public class TossPaymentClient {
         body.put("orderId", command.orderId());
         body.put("amount", command.amount());
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-        return restClient.post().uri(URI.create(CONFIRM_URL)).body(entity)
+        return restClient.post().uri(URI.create(CONFIRM_URL)).body(body).headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve().body(TossPaymentResponse.class);
     }
 
