@@ -1,7 +1,7 @@
 package com.grepp.backend5.payment.infrastructure;
 
-import com.grepp.backend5.payment.domain.PaymentFailure;
-import com.grepp.backend5.payment.domain.PaymentFailureRepository;
+import com.grepp.backend5.payment.domain.model.PaymentFailure;
+import com.grepp.backend5.payment.domain.repository.PaymentFailureRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

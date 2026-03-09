@@ -1,6 +1,6 @@
 package com.grepp.backend5.payment.application.dto;
 
-import com.grepp.backend5.payment.domain.PaymentFailure;
+import com.grepp.backend5.payment.domain.model.PaymentFailure;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

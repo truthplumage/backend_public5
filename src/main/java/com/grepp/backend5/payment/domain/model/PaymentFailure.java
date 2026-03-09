@@ -1,4 +1,4 @@
-package com.grepp.backend5.payment.domain;
+package com.grepp.backend5.payment.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,5 +1,6 @@
-package com.grepp.backend5.payment.domain;
+package com.grepp.backend5.payment.domain.model;
 
+import com.grepp.backend5.payment.domain.PaymentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

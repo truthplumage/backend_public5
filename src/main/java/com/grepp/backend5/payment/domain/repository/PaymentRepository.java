@@ -1,5 +1,6 @@
-package com.grepp.backend5.payment.domain;
+package com.grepp.backend5.payment.domain.repository;
 
+import com.grepp.backend5.payment.domain.model.Payment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

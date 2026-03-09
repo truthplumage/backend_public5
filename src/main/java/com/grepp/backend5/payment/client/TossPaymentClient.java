@@ -37,7 +37,6 @@ public class TossPaymentClient {
         body.put("paymentKey", command.paymentKey());
         body.put("orderId", command.orderId());
         body.put("amount", command.amount());
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
         return restClient.post().uri(URI.create(CONFIRM_URL)).body(body).headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve().body(TossPaymentResponse.class);
     }

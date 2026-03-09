@@ -1,7 +1,7 @@
 package com.grepp.backend5.payment.infrastructure;
 
-import com.grepp.backend5.payment.domain.Payment;
-import com.grepp.backend5.payment.domain.PaymentRepository;
+import com.grepp.backend5.payment.domain.model.Payment;
+import com.grepp.backend5.payment.domain.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
