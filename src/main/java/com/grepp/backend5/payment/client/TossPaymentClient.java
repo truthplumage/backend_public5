@@ -25,7 +25,7 @@ public class TossPaymentClient {
     private static final String CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
     private final RestClient restClient;
-    @Value("payment.toss.secret-key")
+    @Value("${payment.toss.secret-key}")
     private String secretKey;
     public TossPaymentResponse confirm(PaymentCommand command) throws HttpStatusCodeException{
         if(secretKey == null){
