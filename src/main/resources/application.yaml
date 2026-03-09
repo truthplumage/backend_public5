@@ -29,3 +29,11 @@ springdoc:
 payment:
   toss:
     secret-key: ${TOSS_PAYMENT_SECRET}
+
+kafka:
+  enabled: true
+  bootstrap-servers: localhost:9092
+  topic:
+    async-orders: async-orders
+  consumer:
+    group-id: async-sample-group
