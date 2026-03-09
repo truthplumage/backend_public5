@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Schema(description = "주문 응답")
 public record OrderResponse(
         @Schema(description = "주문 ID(UUID)")
         UUID id,

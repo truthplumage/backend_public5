@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Schema(description = "주문 생성 요청")
 public record CreateOrderRequest(
         @Schema(description = "주문 번호(미입력 시 서버에서 자동 생성)")
         String orderNo,
