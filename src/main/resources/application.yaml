@@ -5,7 +5,7 @@ spring:
     job:
       enabled: false
   application:
-    name: backend5
+    name: backend5-service
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:backend5}
     username: ${DB_USERNAME:postgres}
@@ -19,6 +19,16 @@ spring:
       mode: always
       schema-locations: classpath:org/springframework/batch/core/schema-postgresql.sql
       continue-on-error: true
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # random port 사용시 eureka server에 인스턴스가 각각 표시되지 않는다
+    preferIpAddress: true # 서비스간 통신 시 hostname 보다 ip 를 우선
+  client:
+    register-with-eureka: true # eureka 서버에 등록
+    fetch-registry: true # 외부 검색 가능
+    service-url:
+      defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
 
 springdoc:
   swagger-ui:
