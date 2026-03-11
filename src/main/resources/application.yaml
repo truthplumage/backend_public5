@@ -41,6 +41,10 @@ payment:
   toss:
     secret-key: ${TOSS_PAYMENT_SECRET}
 
+jwt:
+  private-key: ${PRIVATE_KEY}
+  public-key: ${PUBLIC_KEY}
+
 kafka:
   enabled: true
   bootstrap-servers: localhost:9092

@@ -1,5 +1,6 @@
 package com.grepp.backend5.member.presentation.controller;
 
+import com.grepp.backend5.member.application.dto.TokenResponse;
 import com.grepp.backend5.member.application.usecase.MemberUseCase;
 import com.grepp.backend5.member.presentation.dto.req.Login;
 import com.grepp.backend5.member.presentation.dto.req.MemberReq;
@@ -7,10 +8,13 @@ import com.grepp.backend5.member.presentation.dto.res.MemberAdmRes;
 import com.grepp.backend5.member.presentation.dto.res.MemberRes;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.web.exchanges.HttpExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 @RestController
@@ -33,7 +37,12 @@ public class MemberController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<Boolean> login(@RequestBody Login login){
-        return ResponseEntity.status(HttpStatus.OK).body(memberUseCase.login(login));
+    public ResponseEntity<Boolean> login(@RequestBody Login login)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        TokenResponse tokenResponse = memberUseCase.login(login);
+        ResponseEntity<Boolean> responseEntity = ResponseEntity.ok(tokenResponse.isLogin());
+        responseEntity.getHeaders().setBearerAuth(tokenResponse.token());
+        responseEntity.getHeaders().set("refresh-token", tokenResponse.refreshToken());
+        return responseEntity;
     }
 }
