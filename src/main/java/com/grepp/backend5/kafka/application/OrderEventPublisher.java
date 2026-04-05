@@ -25,7 +25,7 @@ public class OrderEventPublisher {
     private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
     private final Clock clock;
     @Value("${kafka.topic.async-orders:async-orders}")
-    private final String topicName;
+    private String topicName;
 
     public CompletableFuture<OrderDispatchResult> publish(OrderRequest request) {
         // HTTP 요청에서 받은 정보를 그대로 카프카 이벤트로 변환

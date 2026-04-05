@@ -9,6 +9,7 @@ import com.grepp.backend5.search.presentation.dto.response.IndexStatusResponse;
 import com.grepp.backend5.search.presentation.dto.response.IndexUpdateResponse;
 import com.grepp.backend5.search.presentation.dto.response.ProductSearchResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -26,6 +27,7 @@ import java.util.Map;
 // 키워드/카테고리 기준으로 상품 검색 쿼리를 빌드하고 실행
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "search.elasticsearch", name = "enabled", havingValue = "true")
 public class SearchService implements SearchUsecase{
 
     private final ElasticsearchOperations operations;

@@ -1,0 +1,31 @@
+package com.grepp.backend5.product.application.vector;
+
+import com.grepp.backend5.product.domain.model.Product;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ProductEmbeddingService {
+
+    private final ProductEmbeddingGenerator productEmbeddingGenerator;
+
+    public void refreshEmbedding(Product product) {
+        try {
+            productEmbeddingGenerator.generate(buildText(product))
+                    .ifPresent(product::updateEmbedding);
+        } catch (Exception exception) {
+            log.warn("Failed to refresh embedding for product {}", product.getId(), exception);
+        }
+    }
+
+    private String buildText(Product product) {
+        String description = product.getDescription() == null ? "" : product.getDescription().trim();
+        return """
+                상품명: %s
+                설명: %s
+                """.formatted(product.getName(), description);
+    }
+}

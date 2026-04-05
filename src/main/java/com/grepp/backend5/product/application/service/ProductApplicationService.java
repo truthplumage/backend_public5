@@ -4,10 +4,12 @@ import com.grepp.backend5.product.application.acl.SellerAcl;
 import com.grepp.backend5.product.application.acl.SellerIdentity;
 import com.grepp.backend5.product.application.exception.ProductNotFoundException;
 import com.grepp.backend5.product.application.usecase.ProductUseCase;
+import com.grepp.backend5.product.application.vector.ProductEmbeddingService;
 import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.domain.repository.ProductRepository;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
 import com.grepp.backend5.product.presentation.dto.request.UpdateProductRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +18,12 @@ import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ProductApplicationService implements ProductUseCase {
 
     private final SellerAcl sellerAcl;
     private final ProductRepository productRepository;
-
-    public ProductApplicationService(SellerAcl sellerAcl,
-                                     ProductRepository productRepository) {
-        this.sellerAcl = sellerAcl;
-        this.productRepository = productRepository;
-    }
+    private final ProductEmbeddingService productEmbeddingService;
 
     @Override
     @Transactional
@@ -40,6 +38,7 @@ public class ProductApplicationService implements ProductUseCase {
                 request.status(),
                 actorId
         );
+        productEmbeddingService.refreshEmbedding(product);
         return productRepository.save(product);
     }
 
@@ -65,6 +64,7 @@ public class ProductApplicationService implements ProductUseCase {
                 request.status(),
                 actorId
         );
+        productEmbeddingService.refreshEmbedding(product);
         return product;
     }
 
