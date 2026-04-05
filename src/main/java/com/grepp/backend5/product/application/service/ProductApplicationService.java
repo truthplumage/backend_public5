@@ -9,6 +9,7 @@ import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.domain.repository.ProductRepository;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
 import com.grepp.backend5.product.presentation.dto.request.UpdateProductRequest;
+import com.grepp.backend5.product.presentation.dto.response.ProductEmbeddingRefreshResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +62,21 @@ public class ProductApplicationService implements ProductUseCase {
         return productEmbeddingService.generateQueryEmbedding(query)
                 .map(embedding -> productRepository.findSimilarByEmbedding(embedding, limitedSize))
                 .orElse(List.of());
+    }
+
+    @Override
+    @Transactional
+    public ProductEmbeddingRefreshResponse refreshAllEmbeddings() {
+        List<Product> products = productRepository.findAll();
+        int updatedCount = 0;
+
+        for (Product product : products) {
+            if (productEmbeddingService.refreshEmbedding(product)) {
+                updatedCount++;
+            }
+        }
+
+        return new ProductEmbeddingRefreshResponse(products.size(), updatedCount);
     }
 
     @Override

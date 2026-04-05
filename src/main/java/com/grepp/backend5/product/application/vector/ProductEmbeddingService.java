@@ -14,12 +14,14 @@ public class ProductEmbeddingService {
 
     private final ProductEmbeddingGenerator productEmbeddingGenerator;
 
-    public void refreshEmbedding(Product product) {
+    public boolean refreshEmbedding(Product product) {
         try {
-            productEmbeddingGenerator.generate(buildText(product))
-                    .ifPresent(product::updateEmbedding);
+            Optional<float[]> embedding = productEmbeddingGenerator.generate(buildText(product));
+            embedding.ifPresent(product::updateEmbedding);
+            return embedding.isPresent();
         } catch (Exception exception) {
             log.warn("Failed to refresh embedding for product {}", product.getId(), exception);
+            return false;
         }
     }
 

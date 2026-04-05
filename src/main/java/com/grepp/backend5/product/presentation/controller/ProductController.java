@@ -4,6 +4,7 @@ import com.grepp.backend5.product.application.usecase.ProductUseCase;
 import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
 import com.grepp.backend5.product.presentation.dto.request.UpdateProductRequest;
+import com.grepp.backend5.product.presentation.dto.response.ProductEmbeddingRefreshResponse;
 import com.grepp.backend5.product.presentation.dto.response.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -92,6 +93,16 @@ public class ProductController {
         return productUseCase.searchBySemantic(query, size).stream()
                 .map(ProductResponse::from)
                 .toList();
+    }
+
+    @PostMapping("/embeddings/refresh")
+    @Operation(summary = "전체 상품 임베딩 재생성", description = "현재 저장된 모든 상품의 임베딩을 다시 생성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "재생성 성공",
+                    content = @Content(schema = @Schema(implementation = ProductEmbeddingRefreshResponse.class)))
+    })
+    public ProductEmbeddingRefreshResponse refreshEmbeddings() {
+        return productUseCase.refreshAllEmbeddings();
     }
 
     @PutMapping("/{productId}")
