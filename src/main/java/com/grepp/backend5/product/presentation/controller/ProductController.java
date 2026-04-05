@@ -3,8 +3,10 @@ package com.grepp.backend5.product.presentation.controller;
 import com.grepp.backend5.product.application.usecase.ProductUseCase;
 import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
+import com.grepp.backend5.product.presentation.dto.request.ProductLlmSearchRequest;
 import com.grepp.backend5.product.presentation.dto.request.UpdateProductRequest;
 import com.grepp.backend5.product.presentation.dto.response.ProductEmbeddingRefreshResponse;
+import com.grepp.backend5.product.presentation.dto.response.ProductLlmSearchResponse;
 import com.grepp.backend5.product.presentation.dto.response.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -103,6 +105,16 @@ public class ProductController {
     })
     public ProductEmbeddingRefreshResponse refreshEmbeddings() {
         return productUseCase.refreshAllEmbeddings();
+    }
+
+    @PostMapping("/llm-search")
+    @Operation(summary = "상품 LLM 검색", description = "벡터 검색 결과를 근거로 LLM 답변을 생성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = ProductLlmSearchResponse.class)))
+    })
+    public ProductLlmSearchResponse llmSearch(@Valid @RequestBody ProductLlmSearchRequest request) {
+        return productUseCase.searchWithLlm(request);
     }
 
     @PutMapping("/{productId}")
