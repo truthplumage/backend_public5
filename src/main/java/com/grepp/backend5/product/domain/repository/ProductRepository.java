@@ -14,5 +14,7 @@ public interface ProductRepository {
 
     List<Product> findAll();
 
+    List<Product> findSimilarByEmbedding(float[] embedding, int size);
+
     void delete(Product product);
 }

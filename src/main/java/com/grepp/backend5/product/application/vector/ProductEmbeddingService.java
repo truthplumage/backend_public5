@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,6 +20,15 @@ public class ProductEmbeddingService {
                     .ifPresent(product::updateEmbedding);
         } catch (Exception exception) {
             log.warn("Failed to refresh embedding for product {}", product.getId(), exception);
+        }
+    }
+
+    public Optional<float[]> generateQueryEmbedding(String query) {
+        try {
+            return productEmbeddingGenerator.generate(query);
+        } catch (Exception exception) {
+            log.warn("Failed to generate query embedding", exception);
+            return Optional.empty();
         }
     }
 

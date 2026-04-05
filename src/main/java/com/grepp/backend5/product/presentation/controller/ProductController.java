@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -73,6 +74,22 @@ public class ProductController {
     })
     public List<ProductResponse> getAll() {
         return productUseCase.getAll().stream()
+                .map(ProductResponse::from)
+                .toList();
+    }
+
+    @GetMapping("/semantic-search")
+    @Operation(summary = "상품 벡터 검색", description = "질문을 벡터로 바꿔 유사한 상품을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
+    public List<ProductResponse> semanticSearch(
+            @Parameter(description = "검색 문장", example = "영상 편집용 노트북")
+            @RequestParam String query,
+            @Parameter(description = "반환 개수", example = "5")
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return productUseCase.searchBySemantic(query, size).stream()
                 .map(ProductResponse::from)
                 .toList();
     }

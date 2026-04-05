@@ -53,6 +53,17 @@ public class ProductApplicationService implements ProductUseCase {
     }
 
     @Override
+    public List<Product> searchBySemantic(String query, int size) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+        int limitedSize = Math.max(1, Math.min(size, 20));
+        return productEmbeddingService.generateQueryEmbedding(query)
+                .map(embedding -> productRepository.findSimilarByEmbedding(embedding, limitedSize))
+                .orElse(List.of());
+    }
+
+    @Override
     @Transactional
     public Product update(UUID productId, UpdateProductRequest request, UUID actorId) {
         Product product = findByIdOrThrow(productId);

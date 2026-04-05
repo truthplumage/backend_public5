@@ -15,6 +15,8 @@ public interface ProductUseCase {
 
     List<Product> getAll();
 
+    List<Product> searchBySemantic(String query, int size);
+
     Product update(UUID productId, UpdateProductRequest request, UUID actorId);
 
     void delete(UUID productId);
