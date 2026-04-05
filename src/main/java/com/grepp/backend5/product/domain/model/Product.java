@@ -8,6 +8,9 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Array;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -51,6 +54,11 @@ public class Product {
 
     @Column(name = "modify_dt", nullable = false)
     private LocalDateTime modifyDt;
+
+    @JdbcTypeCode(SqlTypes.VECTOR)
+    @Array(length = 1536)
+    @Column(name = "embedding", columnDefinition = "vector(1536)")
+    private float[] embedding;
 
     protected Product() {
     }
@@ -96,6 +104,10 @@ public class Product {
         this.stock = stock;
         this.status = status;
         this.modifyId = modifierId;
+    }
+
+    public void updateEmbedding(float[] embedding) {
+        this.embedding = embedding;
     }
 
     @PrePersist
