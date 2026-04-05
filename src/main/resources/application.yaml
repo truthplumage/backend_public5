@@ -1,6 +1,10 @@
 spring:
   config:
     import: optional:file:.env[.properties]
+  data:
+    elasticsearch:
+      repositories:
+        enabled: ${search.elasticsearch.enabled:false}
   batch:
     job:
       enabled: false
@@ -25,7 +29,7 @@ eureka:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # random port 사용시 eureka server에 인스턴스가 각각 표시되지 않는다
     preferIpAddress: true # 서비스간 통신 시 hostname 보다 ip 를 우선
   client:
-    register-with-eureka: true # eureka 서버에 등록
+    register-with-eureka: false # eureka 서버에 등록
     fetch-registry: true # 외부 검색 가능
     service-url:
       defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
@@ -45,10 +49,25 @@ jwt:
   private-key: ${PRIVATE_KEY}
   public-key: ${PUBLIC_KEY}
 
+openai:
+  embedding:
+    enabled: true
+    api-key: ${OPENAI_API_KEY:}
+    model: text-embedding-3-small
+
+search:
+  elasticsearch:
+    enabled: false
+
 kafka:
-  enabled: true
+  enabled: false
   bootstrap-servers: localhost:9092
   topic:
     async-orders: async-orders
   consumer:
     group-id: async-sample-group
+
+logging:
+  level:
+    org.apache.kafka.clients.admin.internals.AdminMetadataManager: WARN
+    org.apache.kafka.clients.NetworkClient: WARN

@@ -7,6 +7,7 @@ import com.grepp.backend5.product.application.exception.SellerNotFoundException;
 import com.grepp.backend5.product.application.usecase.ProductUseCase;
 import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
+import com.grepp.backend5.product.presentation.dto.response.ProductEmbeddingRefreshResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -155,6 +156,41 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.error").value("Not Found"))
                 .andExpect(jsonPath("$.message", containsString(productId.toString())))
                 .andExpect(jsonPath("$.path").value("/api/products/" + productId));
+    }
+
+    @Test
+    void semanticSearchReturnsProducts() throws Exception {
+        Product product = Product.create(
+                UUID.randomUUID(),
+                "Macbook Pro 14",
+                "M3 chip",
+                new BigDecimal("2590000.00"),
+                10,
+                "ACTIVE",
+                UUID.randomUUID()
+        );
+        product.setRegDt(LocalDateTime.now());
+        product.setModifyDt(LocalDateTime.now());
+
+        when(productUseCase.searchBySemantic("영상 편집용 노트북", 5))
+                .thenReturn(java.util.List.of(product));
+
+        mockMvc.perform(get("/api/products/semantic-search")
+                        .param("query", "영상 편집용 노트북")
+                        .param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Macbook Pro 14"));
+    }
+
+    @Test
+    void refreshEmbeddingsReturnsCounts() throws Exception {
+        when(productUseCase.refreshAllEmbeddings())
+                .thenReturn(new ProductEmbeddingRefreshResponse(10, 8));
+
+        mockMvc.perform(post("/api/products/embeddings/refresh"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalCount").value(10))
+                .andExpect(jsonPath("$.updatedCount").value(8));
     }
 
     @Test
