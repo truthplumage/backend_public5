@@ -68,8 +68,8 @@
 
 ## 지금 코드에서 보는 위치
 
-- 엔티티: [Product.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/domain/model/Product.java)
-- DB 컬럼 SQL: [product-pgvector.sql](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/resources/db/product-pgvector.sql)
+- 엔티티: [Product.java](../../src/main/java/com/grepp/backend5/product/domain/model/Product.java)
+- DB 컬럼 SQL: [product-pgvector.sql](../../src/main/resources/db/product-pgvector.sql)
 
 ## 지금 단계에서 기억할 것
 

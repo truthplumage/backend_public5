@@ -98,11 +98,11 @@ OPENAI_API_KEY=...
 
 ## 관련 파일
 
-- API: [ProductController.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/presentation/controller/ProductController.java)
-- 서비스: [ProductApplicationService.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/application/service/ProductApplicationService.java)
-- 요청 DTO: [ProductLlmSearchRequest.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/presentation/dto/request/ProductLlmSearchRequest.java)
-- 응답 DTO: [ProductLlmSearchResponse.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/presentation/dto/response/ProductLlmSearchResponse.java)
-- OpenAI 구현: [OpenAiProductLlmAnswerGenerator.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/infrastructure/llm/OpenAiProductLlmAnswerGenerator.java)
+- API: [ProductController.java](../../src/main/java/com/grepp/backend5/product/presentation/controller/ProductController.java)
+- 서비스: [ProductApplicationService.java](../../src/main/java/com/grepp/backend5/product/application/service/ProductApplicationService.java)
+- 요청 DTO: [ProductLlmSearchRequest.java](../../src/main/java/com/grepp/backend5/product/presentation/dto/request/ProductLlmSearchRequest.java)
+- 응답 DTO: [ProductLlmSearchResponse.java](../../src/main/java/com/grepp/backend5/product/presentation/dto/response/ProductLlmSearchResponse.java)
+- OpenAI 구현: [OpenAiProductLlmAnswerGenerator.java](../../src/main/java/com/grepp/backend5/product/infrastructure/llm/OpenAiProductLlmAnswerGenerator.java)
 
 ## 지금 기억할 것
 

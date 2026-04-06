@@ -81,7 +81,7 @@ SELECT '[1,2,3]'::vector;
 
 현재 프로젝트에는 아래 SQL 파일이 있습니다.
 
-- [pgvector.sql](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/resources/db/pgvector.sql)
+- [product-pgvector.sql](../../src/main/resources/db/product-pgvector.sql)
 
 이 파일은:
 

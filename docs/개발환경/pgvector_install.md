@@ -130,7 +130,7 @@ extension "vector" is not available
 
 이 프로젝트는 아래 SQL 파일을 사용합니다.
 
-- [pgvector.sql](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/resources/db/pgvector.sql)
+- [product-pgvector.sql](../../src/main/resources/db/product-pgvector.sql)
 
 이 파일은 아래 테이블을 만듭니다.
 
@@ -231,7 +231,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 - `psql: command not found`
 
 해결:
-- [postgres18_brew.md](/Users/parkjinwoo/source/study/grepp-BE5/backend5/docs/개발환경/postgres18_brew.md)의 PATH 설정 부분을 먼저 적용합니다.
+- [postgres18_brew.md](./postgres18_brew.md)의 PATH 설정 부분을 먼저 적용합니다.
 
 ---
 

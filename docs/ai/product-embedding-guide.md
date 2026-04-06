@@ -92,11 +92,11 @@ OPENAI_API_KEY=...
 
 ## 관련 파일
 
-- 서비스: [ProductEmbeddingService.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/application/vector/ProductEmbeddingService.java)
-- OpenAI 구현: [OpenAiProductEmbeddingGenerator.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/infrastructure/vector/OpenAiProductEmbeddingGenerator.java)
-- 비활성 구현: [NoOpProductEmbeddingGenerator.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/infrastructure/vector/NoOpProductEmbeddingGenerator.java)
-- 상품 서비스: [ProductApplicationService.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/application/service/ProductApplicationService.java)
-- 상품 API: [ProductController.java](/Users/parkjinwoo/source/study/grepp-BE5/backend5/src/main/java/com/grepp/backend5/product/presentation/controller/ProductController.java)
+- 서비스: [ProductEmbeddingService.java](../../src/main/java/com/grepp/backend5/product/application/vector/ProductEmbeddingService.java)
+- OpenAI 구현: [OpenAiProductEmbeddingGenerator.java](../../src/main/java/com/grepp/backend5/product/infrastructure/vector/OpenAiProductEmbeddingGenerator.java)
+- 비활성 구현: [NoOpProductEmbeddingGenerator.java](../../src/main/java/com/grepp/backend5/product/infrastructure/vector/NoOpProductEmbeddingGenerator.java)
+- 상품 서비스: [ProductApplicationService.java](../../src/main/java/com/grepp/backend5/product/application/service/ProductApplicationService.java)
+- 상품 API: [ProductController.java](../../src/main/java/com/grepp/backend5/product/presentation/controller/ProductController.java)
 
 ## 지금 기억할 것
 
