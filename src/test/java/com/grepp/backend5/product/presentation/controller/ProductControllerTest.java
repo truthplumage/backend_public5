@@ -7,7 +7,9 @@ import com.grepp.backend5.product.application.exception.SellerNotFoundException;
 import com.grepp.backend5.product.application.usecase.ProductUseCase;
 import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
+import com.grepp.backend5.product.presentation.dto.response.ProductLlmSearchResponse;
 import com.grepp.backend5.product.presentation.dto.response.ProductEmbeddingRefreshResponse;
+import com.grepp.backend5.product.presentation.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -191,6 +193,43 @@ class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalCount").value(10))
                 .andExpect(jsonPath("$.updatedCount").value(8));
+    }
+
+    @Test
+    void llmSearchReturnsAnswerAndProducts() throws Exception {
+        ProductLlmSearchResponse response = new ProductLlmSearchResponse(
+                "영상 편집용 노트북 추천해줘",
+                "맥북 프로 14가 가장 적합합니다.",
+                java.util.List.of(
+                        new ProductResponse(
+                                UUID.randomUUID(),
+                                UUID.randomUUID(),
+                                "Macbook Pro 14",
+                                "M3 chip",
+                                new BigDecimal("2590000.00"),
+                                10,
+                                "ACTIVE",
+                                UUID.randomUUID(),
+                                LocalDateTime.now(),
+                                UUID.randomUUID(),
+                                LocalDateTime.now()
+                        )
+                )
+        );
+
+        when(productUseCase.searchWithLlm(any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/products/llm-search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "question": "영상 편집용 노트북 추천해줘",
+                                  "size": 3
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.answer").value("맥북 프로 14가 가장 적합합니다."))
+                .andExpect(jsonPath("$.products[0].name").value("Macbook Pro 14"));
     }
 
     @Test

@@ -1,0 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+
+ALTER TABLE public."product"
+    ADD COLUMN IF NOT EXISTS embedding VECTOR(1536);

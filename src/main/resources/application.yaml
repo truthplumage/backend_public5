@@ -55,9 +55,9 @@ openai:
     api-key: ${OPENAI_API_KEY:}
     model: text-embedding-3-small
   chat:
-    enabled: false
+    enabled: true
     api-key: ${OPENAI_API_KEY:}
-    model: gpt-4o-mini
+    model: gpt-5.4-nano
 
 search:
   elasticsearch:
@@ -75,3 +75,7 @@ logging:
   level:
     org.apache.kafka.clients.admin.internals.AdminMetadataManager: WARN
     org.apache.kafka.clients.NetworkClient: WARN
+
+app:
+  openapi:
+    server-url: http://localhost:8080

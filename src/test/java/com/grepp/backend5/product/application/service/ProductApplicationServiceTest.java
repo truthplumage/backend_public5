@@ -4,12 +4,15 @@ import com.grepp.backend5.product.application.acl.SellerAcl;
 import com.grepp.backend5.product.application.acl.SellerIdentity;
 import com.grepp.backend5.product.application.exception.SellerNotFoundException;
 import com.grepp.backend5.product.application.exception.ProductNotFoundException;
+import com.grepp.backend5.product.application.llm.ProductLlmAnswerGenerator;
 import com.grepp.backend5.product.application.vector.ProductEmbeddingService;
 import com.grepp.backend5.product.domain.model.Product;
 import com.grepp.backend5.product.domain.repository.ProductRepository;
 import com.grepp.backend5.product.presentation.dto.request.CreateProductRequest;
+import com.grepp.backend5.product.presentation.dto.request.ProductLlmSearchRequest;
 import com.grepp.backend5.product.presentation.dto.request.UpdateProductRequest;
 import com.grepp.backend5.product.presentation.dto.response.ProductEmbeddingRefreshResponse;
+import com.grepp.backend5.product.presentation.dto.response.ProductLlmSearchResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,6 +42,9 @@ class ProductApplicationServiceTest {
 
     @Mock
     private ProductEmbeddingService productEmbeddingService;
+
+    @Mock
+    private ProductLlmAnswerGenerator productLlmAnswerGenerator;
 
     @InjectMocks
     private ProductApplicationService productApplicationService;
@@ -205,6 +211,33 @@ class ProductApplicationServiceTest {
 
         assertThat(response.totalCount()).isEqualTo(2);
         assertThat(response.updatedCount()).isEqualTo(1);
+    }
+
+    @Test
+    void searchWithLlmReturnsAnswerAndProducts() {
+        Product product = Product.create(
+                UUID.randomUUID(),
+                "Macbook Pro 14",
+                "M3 chip",
+                new BigDecimal("2590000.00"),
+                10,
+                "ACTIVE",
+                UUID.randomUUID()
+        );
+
+        when(productEmbeddingService.generateQueryEmbedding("영상 편집용 노트북 추천해줘"))
+                .thenReturn(Optional.of(new float[]{0.1f, 0.2f, 0.3f}));
+        when(productRepository.findSimilarByEmbedding(any(float[].class), eq(3)))
+                .thenReturn(List.of(product));
+        when(productLlmAnswerGenerator.generateAnswer(eq("영상 편집용 노트북 추천해줘"), any(List.class)))
+                .thenReturn(Optional.of("맥북 프로 14가 가장 적합합니다."));
+
+        ProductLlmSearchResponse response = productApplicationService.searchWithLlm(
+                new ProductLlmSearchRequest("영상 편집용 노트북 추천해줘", 3)
+        );
+
+        assertThat(response.answer()).contains("맥북 프로 14");
+        assertThat(response.products()).hasSize(1);
     }
 
     @Test

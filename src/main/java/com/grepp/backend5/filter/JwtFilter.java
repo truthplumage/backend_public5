@@ -24,6 +24,8 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_PATTERNS = List.of(
             "/api/member/**",
+            "/api/products/semantic-search",
+            "/api/products/llm-search",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/**",
@@ -51,8 +53,13 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header");
+        if (bearerToken == null || bearerToken.isBlank()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (!bearerToken.startsWith("Bearer ")) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization header");
             return;
         }
 

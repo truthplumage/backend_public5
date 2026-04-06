@@ -2,6 +2,7 @@ package com.grepp.backend5.product.infrastructure.llm;
 
 import com.grepp.backend5.product.application.llm.ProductLlmAnswerGenerator;
 import com.grepp.backend5.product.domain.model.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -15,21 +16,17 @@ import java.util.Optional;
 
 @Component
 @ConditionalOnProperty(prefix = "openai.chat", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class OpenAiProductLlmAnswerGenerator implements ProductLlmAnswerGenerator {
 
-    private static final String CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions";
+    private static final String CHAT_COMPLETIONS_URL =
+            "https://api.openai.com/v1/chat/completions";
 
     private final RestClient restClient;
-    private final String apiKey;
-    private final String model;
-
-    public OpenAiProductLlmAnswerGenerator(RestClient restClient,
-                                          @Value("${openai.chat.api-key:${OPENAI_API_KEY:}}") String apiKey,
-                                          @Value("${openai.chat.model:gpt-4o-mini}") String model) {
-        this.restClient = restClient;
-        this.apiKey = apiKey;
-        this.model = model;
-    }
+    @Value("${openai.chat.api-key:${OPENAI_API_KEY:}}")
+    private String apiKey;
+    @Value("${openai.chat.model:gpt-5.4-nano}")
+    private String model;
 
     @Override
     public Optional<String> generateAnswer(String question, List<Product> products) {

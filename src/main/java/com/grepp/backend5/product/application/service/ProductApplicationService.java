@@ -30,7 +30,31 @@ public class ProductApplicationService implements ProductUseCase {
     private final ProductRepository productRepository;
     private final ProductEmbeddingService productEmbeddingService;
     private final ProductLlmAnswerGenerator productLlmAnswerGenerator;
+    @Override
+    public ProductLlmSearchResponse searchWithLlm(ProductLlmSearchRequest request) {
+        List<Product> products = searchBySemantic(request.question(),
+                request.resolvedSize());
 
+        if (products.isEmpty()) {
+            return new ProductLlmSearchResponse(
+                    request.question(),
+                    "관련 상품을 찾지 못했습니다.",
+                    List.of()
+            );
+        }
+
+        String answer = productLlmAnswerGenerator.generateAnswer(request.question(),
+                        products)
+                .orElse("LLM 답변 기능이 꺼져 있어 유사한 상품 목록만 반환합니다.");
+
+        return new ProductLlmSearchResponse(
+                request.question(),
+                answer,
+                products.stream()
+                        .map(ProductResponse::from)
+                        .toList()
+        );
+    }
     @Override
     @Transactional
     public Product create(CreateProductRequest request, UUID actorId) {
@@ -82,30 +106,6 @@ public class ProductApplicationService implements ProductUseCase {
         }
 
         return new ProductEmbeddingRefreshResponse(products.size(), updatedCount);
-    }
-
-    @Override
-    public ProductLlmSearchResponse searchWithLlm(ProductLlmSearchRequest request) {
-        List<Product> products = searchBySemantic(request.question(), request.resolvedSize());
-
-        if (products.isEmpty()) {
-            return new ProductLlmSearchResponse(
-                    request.question(),
-                    "관련 상품을 찾지 못했습니다.",
-                    List.of()
-            );
-        }
-
-        String answer = productLlmAnswerGenerator.generateAnswer(request.question(), products)
-                .orElse("LLM 답변 기능이 꺼져 있어 유사한 상품 목록만 반환합니다.");
-
-        return new ProductLlmSearchResponse(
-                request.question(),
-                answer,
-                products.stream()
-                        .map(ProductResponse::from)
-                        .toList()
-        );
     }
 
     @Override

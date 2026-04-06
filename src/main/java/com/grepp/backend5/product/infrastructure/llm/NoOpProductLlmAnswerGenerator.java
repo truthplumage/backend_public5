@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@ConditionalOnProperty(prefix = "openai.chat", name = "enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "openai.chat", name = "enabled",
+        havingValue = "false", matchIfMissing = true)
 public class NoOpProductLlmAnswerGenerator implements ProductLlmAnswerGenerator {
 
     @Override
-    public Optional<String> generateAnswer(String question, List<Product> products) {
+    public Optional<String> generateAnswer(String question,
+                                           List<Product> products) {
         return Optional.empty();
     }
 }

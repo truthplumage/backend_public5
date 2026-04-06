@@ -111,9 +111,11 @@ public class ProductController {
     @Operation(summary = "상품 LLM 검색", description = "벡터 검색 결과를 근거로 LLM 답변을 생성합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = ProductLlmSearchResponse.class)))
+                    content = @Content(schema =
+                    @Schema(implementation = ProductLlmSearchResponse.class)))
     })
-    public ProductLlmSearchResponse llmSearch(@Valid @RequestBody ProductLlmSearchRequest request) {
+    public ProductLlmSearchResponse llmSearch(@Valid @RequestBody
+                                                  ProductLlmSearchRequest request) {
         return productUseCase.searchWithLlm(request);
     }
 

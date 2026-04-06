@@ -24,7 +24,13 @@ public class ProductEmbeddingService {
             return false;
         }
     }
-
+    private String buildText(Product product) {
+        String description = product.getDescription() == null ? "" : product.getDescription().trim();
+        return """
+                상품명: %s
+                설명: %s
+                """.formatted(product.getName(), description);
+    }
     public Optional<float[]> generateQueryEmbedding(String query) {
         try {
             return productEmbeddingGenerator.generate(query);
@@ -34,11 +40,5 @@ public class ProductEmbeddingService {
         }
     }
 
-    private String buildText(Product product) {
-        String description = product.getDescription() == null ? "" : product.getDescription().trim();
-        return """
-                상품명: %s
-                설명: %s
-                """.formatted(product.getName(), description);
-    }
+
 }

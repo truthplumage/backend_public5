@@ -28,6 +28,8 @@ public class SecurityConfig {
                             .requestMatchers("/swagger-ui/**").permitAll()
                             .requestMatchers("/swagger-ui.html").permitAll()
                             .requestMatchers("/v3/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/products/semantic-search").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/products/llm-search").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
                             .requestMatchers("/actuator/**").permitAll()
                             .requestMatchers("/api/authorizations/**").permitAll()
