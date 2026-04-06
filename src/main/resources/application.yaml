@@ -58,6 +58,11 @@ openai:
     enabled: true
     api-key: ${OPENAI_API_KEY:}
     model: gpt-5.4-nano
+  image-analysis:
+    model: gpt-5.4-nano
+  image:
+    api-key: ${OPENAI_API_KEY:}
+    model: gpt-image-1-mini
 
 search:
   elasticsearch:
