@@ -54,6 +54,10 @@ openai:
     enabled: true
     api-key: ${OPENAI_API_KEY:}
     model: text-embedding-3-small
+  chat:
+    enabled: false
+    api-key: ${OPENAI_API_KEY:}
+    model: gpt-4o-mini
 
 search:
   elasticsearch:
