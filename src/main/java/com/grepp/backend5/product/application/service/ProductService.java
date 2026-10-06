@@ -3,6 +3,7 @@ package com.grepp.backend5.product.application.service;
 import com.grepp.backend5.product.application.port.in.ProductUseCase;
 import com.grepp.backend5.product.application.port.out.ProductPersistencePort;
 import com.grepp.backend5.product.domain.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +14,10 @@ import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ProductService implements ProductUseCase {
 
     private final ProductPersistencePort productPersistencePort;
-
-    public ProductService(ProductPersistencePort productPersistencePort) {
-        this.productPersistencePort = productPersistencePort;
-    }
 
     @Override
     @Transactional
@@ -70,6 +68,6 @@ public class ProductService implements ProductUseCase {
 
     private Product findByIdOrThrow(UUID productId) {
         return productPersistencePort.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."));
     }
 }
