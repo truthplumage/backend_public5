@@ -3,7 +3,7 @@
 ## 1. 적용 범위
 
 다른 백엔드 서비스가 이 프로젝트의 상품 정보를 조회할 수 있도록 gRPC 서버를 추가했다.
-현재 제공하는 기능은 상품 단건 조회와 전체 목록 조회다. 생성·수정·삭제는 기존 REST API를 사용한다.
+현재 제공하는 기능은 상품 등록, 단건 조회, 전체 목록 조회다. 수정·삭제는 기존 REST API를 사용한다.
 
 - 환경: Java 21, Spring Boot 4.0.3, Spring gRPC 1.0.0
 - REST 포트: 기본 8080
@@ -44,12 +44,13 @@ REST의 `ProductController`와 gRPC의 `ProductGrpcService`가 동일한 `Produc
 
 ```protobuf
 service ProductService {
+  rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
   rpc GetProduct(GetProductRequest) returns (ProductResponse);
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
 }
 ```
 
-두 메서드는 요청 한 번에 응답 한 번을 반환하는 unary RPC다.
+세 메서드는 요청 한 번에 응답 한 번을 반환하는 unary RPC다.
 
 - `GetProductRequest.product_id`: 조회할 상품의 UUID 문자열
 - `ListProductsRequest`: 입력 필드 없는 요청
@@ -222,7 +223,7 @@ JAVA_HOME=$(/usr/libexec/java_home -v 21) ./gradlew test --tests '*ProductGrpcSe
 | `missingProduct` | 없는 상품의 `NOT_FOUND` 응답 |
 | `internalErrorDoesNotExposeDetails` | `INTERNAL` 응답 및 내부 오류 내용 비노출 |
 
-작성 후 위 6개 테스트가 통과했다.
+최초 조회 테스트 6개에 등록 테스트 4개를 추가했다.
 이 테스트는 직렬화·TCP 통신·서버 어댑터·클라이언트 호출을 검증한다.
 Spring Boot 전체 실행이나 실제 PostgreSQL 조회는 검증 범위에 포함하지 않는다.
 
@@ -238,4 +239,68 @@ Spring Boot 전체 실행이나 실제 PostgreSQL 조회는 검증 범위에 포
 | 서버 시작 시 DB 연결 실패 | PostgreSQL 실행 및 DB 환경 변수 확인 |
 
 기존 `ProductUseCase.create`의 미정의 `ProductReq` 타입은 현재 서비스와 컨트롤러에 맞춰
-`Product`로 수정했다. gRPC에 상품 생성 기능을 추가한 것은 아니다.
+`Product`로 수정했다. 이후 `CreateProduct` RPC가 이 생성 유스케이스를 호출하도록 추가했다.
+
+## 11. 테스트 결과 출력
+
+각 테스트는 검증 통과 후 시나리오, 입력값, 실제 응답 또는 gRPC 오류 상태를 콘솔에 출력한다.
+Gradle의 `showStandardStreams` 설정으로 터미널에서도 확인할 수 있다.
+이미 실행한 테스트를 다시 호출하려면 다음 명령을 사용한다.
+
+```sh
+./gradlew test --tests '*ProductGrpcServiceTest' --rerun-tasks --console=plain
+```
+
+## 12. 상품 데이터 등록: CreateProduct
+
+다른 서비스가 다음 요청 데이터를 보내면 `ProductUseCase.create()`를 통해 상품을 저장하고,
+저장된 상품의 UUID와 정보를 `ProductResponse`로 반환한다.
+
+| 요청 필드 | 규칙 |
+| --- | --- |
+| seller_id | 필수 표준 UUID 문자열 |
+| creator_id | 필수 등록자 UUID 문자열 |
+| name | 공백만 있는 값 금지, 최대 100자 |
+| description | 선택, 미입력 시 null |
+| price | 필수 decimal 문자열, 0 이상, 정수 최대 13자리·소수 최대 2자리 |
+| stock | 선택, 미입력 시 0, 음수 금지 |
+| status | 선택, 미입력 시 ACTIVE, 입력 시 공백 금지·최대 20자 |
+
+현재 상태 값은 길이와 공백만 검증하며 별도의 상태 enum은 없다.
+검증 오류는 `INVALID_ARGUMENT`, 저장 실패는 `INTERNAL`로 반환한다.
+등록 요청에는 상품 ID를 받지 않으며 실제 저장할 상품 ID는 기존 `ProductService.create()`가 생성한다.
+등록자 ID는 현재 요청에서 전달받는 구조다.
+
+기존 클라이언트 예제의 채널/stub 생성 후 다음 코드를 실행한다.
+`CreateProductRequest`도 `com.grepp.backend5.product.grpc` 패키지에서 import한다.
+
+```java
+var request = CreateProductRequest.newBuilder()
+        .setSellerId("11111111-1111-1111-1111-111111111111")
+        .setCreatorId("22222222-2222-2222-2222-222222222222")
+        .setName("맥북 프로")
+        .setDescription("M3 칩셋")
+        .setPrice("2590000.00")
+        .setStock(10)
+        .setStatus("ACTIVE")
+        .build();
+var created = stub.withDeadlineAfter(3, TimeUnit.SECONDS).createProduct(request);
+System.out.println("등록 상품 ID: " + created.getId());
+System.out.println("상품명: " + created.getName());
+
+var found = stub.withDeadlineAfter(3, TimeUnit.SECONDS).getProduct(
+        GetProductRequest.newBuilder().setProductId(created.getId()).build());
+```
+
+서버 구현은 요청 검증 → `Product` 변환 → 기존 생성 유스케이스 호출 → 저장 결과 응답 순서다.
+실제 서버에서는 PostgreSQL에 저장한다.
+
+추가한 호출 테스트:
+
+- `createProduct`: 입력 필드·등록자 전달과 생성 결과 응답 검증
+- `createProductDefaults`: 재고 0, 상태 ACTIVE, 설명 미설정 및 가격 변환 검증
+- `invalidCreateInput`: 잘못된 UUID·상품명·가격·재고·상태 거부 및 유스케이스 미호출
+- `createFailure`: 저장 실패 상태와 내부 오류 내용 비노출
+
+테스트에서는 기존과 동일하게 유스케이스를 mock으로 처리한다.
+실제 DB 저장이나 트랜잭션은 이 테스트의 검증 범위에 포함하지 않는다.
